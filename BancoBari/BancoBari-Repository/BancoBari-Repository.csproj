@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>BancoBari_Repository</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BancoBari-Domain\BancoBari-Domain.csproj" />
+    <ProjectReference Include="..\Crosscutting\Crosscutting.csproj" />
+  </ItemGroup>
+
+</Project>
