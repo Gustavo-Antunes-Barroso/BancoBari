@@ -18,7 +18,7 @@ namespace BancoBari.Subscriber_Application.Implementation
     {
         private readonly IConfiguration _configuration;
         private readonly IQueuedRepository _queuedRepository;
-        public QueuedAppService(IConfiguration configuration, 
+        public QueuedAppService(IConfiguration configuration,
             IQueuedRepository queuedRepository)
         {
             _configuration = configuration;
@@ -27,41 +27,49 @@ namespace BancoBari.Subscriber_Application.Implementation
         public void BuscarNaFila()
         {
             var host = _configuration.GetSection("QueueHost").Value;
-            var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(3), Port = AmqpTcpEndpoint.UseDefaultPort };
-            using (var connection = factory.CreateConnection())
+            try
             {
-                using (var channel = connection.CreateModel())
+
+                var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(3), Port = AmqpTcpEndpoint.UseDefaultPort };
+                using (var connection = factory.CreateConnection())
                 {
-                    while (channel.IsOpen)
+                    using (var channel = connection.CreateModel())
                     {
-                        Thread.Sleep(1);
-                        channel.QueueDeclare(queue: "Mensagem",
-                          durable: false,
-                          exclusive: false,
-                          autoDelete: false,
-                          arguments: null
-                          );
-
-
-                        var consumer = new EventingBasicConsumer(channel);
-                        QueuedObject obj = new QueuedObject();
-                        string message = "";
-
-                        consumer.Received += (model, ea) =>
+                        while (channel.IsOpen)
                         {
-                            var body = ea.Body.ToArray();
-                            message = Encoding.UTF8.GetString(body);
-                            obj = JsonConvert.DeserializeObject<QueuedObject>(message);
-                            _queuedRepository.Inserir(obj);
-                        };
+                            Thread.Sleep(1);
+                            channel.QueueDeclare(queue: "Mensagem",
+                              durable: false,
+                              exclusive: false,
+                              autoDelete: false,
+                              arguments: null
+                              );
 
-                        channel.BasicConsume(queue: "Mensagem",
-                            autoAck: true,
-                            consumer: consumer
-                            );
+
+                            var consumer = new EventingBasicConsumer(channel);
+                            QueuedObject obj = new QueuedObject();
+                            string message = "";
+
+                            consumer.Received += (model, ea) =>
+                            {
+                                var body = ea.Body.ToArray();
+                                message = Encoding.UTF8.GetString(body);
+                                obj = JsonConvert.DeserializeObject<QueuedObject>(message);
+                                _queuedRepository.Inserir(obj);
+                            };
+
+                            channel.BasicConsume(queue: "Mensagem",
+                                autoAck: true,
+                                consumer: consumer
+                                );
+                        }
                     }
+                    connection.Close();
                 }
-                connection.Close();
+            }
+            catch
+            {
+
             }
         }
 
