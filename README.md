@@ -5,26 +5,35 @@ Para verificar se está tudo ok, acesse http://localhost:15672/ user: guest senh
 Crie seu banco de dados e troque a ConnectionString nos arquivos appsettings.json em ambos projetos.
 Rode o seguinte script em seu banco de dados:
 
+CREATE TABLE Sistema
+(
+	Id UNIQUEIDENTIFIER PRIMARY KEY NOT NULL,
+	Nome VARCHAR(MAX) NOT NULL
+)
+GO
+insert into Sistema values('07ccd9ab-c9ee-437a-a992-291417f1f23e','BancoBari.Publisher')
+GO
 CREATE TABLE MENSAGEM
 (
 	Id UNIQUEIDENTIFIER PRIMARY KEY NOT NULL,
-	Descricao VARCHAR(MAX) NOT NULL
+	Descricao VARCHAR(MAX) NOT NULL,
+	SistemaId UNIQUEIDENTIFIER NOT NULL,
+	Integrado bit default 0,
+	FOREIGN KEY (SistemaId) REFERENCES Sistema(Id)
 )
+
 GO
-INSERT INTO MENSAGEM VALUES('3FA85F64-5717-4562-B3FC-2C963F66AFA6', 'Hello World');
-GO
+
 CREATE TABLE Queued
 (
+	TransactionId UNIQUEIDENTIFIER NOT NULL primary key,
 	SistemaId UNIQUEIDENTIFIER NOT NULL,
-	NomeSitema VARCHAR(100) NOT NULL,
-	MensagemId UNIQUEIDENTIFIER primary key NOT NULL,
+	MensagemId UNIQUEIDENTIFIER NOT NULL,
 	MensagemDescricao VARCHAR(MAX) NOT NULL,
-	TransactionId UNIQUEIDENTIFIER NOT NULL,
-	Data DATETIME NOT NULL
-)
+	Data DATETIME NOT NULL,
+	FOREIGN KEY (SistemaId) REFERENCES Sistema(Id)
+) 
 
 Rode as duas aplicações para validar o funcionamento.
 As api's do projeto BancoBari estão documentadas via swagger.
 Através da url do RabbitMQ http://localhost:15672/ ou fazendo um simples select na tabela Queued, vemos o funcionamento do publish e do subscriber.
-
-OBS: Na classe Queue.cs do projeto BancoBari foi trocado o set da propriedade MensagemId para Guid.NewGuid(), a fim de vermos o banco sendo populado.
