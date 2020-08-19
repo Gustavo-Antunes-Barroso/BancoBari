@@ -12,6 +12,7 @@ CREATE TABLE Sistema
 )
 GO
 insert into Sistema values('07ccd9ab-c9ee-437a-a992-291417f1f23e','BancoBari.Publisher')
+insert into Sistema values('64194c4c-1a8d-4c5c-8bf5-e568af6b320d','BancoBari.Publisher 2')
 GO
 CREATE TABLE MENSAGEM
 (
@@ -21,7 +22,7 @@ CREATE TABLE MENSAGEM
 	Integrado bit default 0,
 	FOREIGN KEY (SistemaId) REFERENCES Sistema(Id)
 )
-
+insert into MENSAGEM values('e7c3f279-6b71-4297-a9e2-6e58c1366f02', 'Hello World', '64194c4c-1a8d-4c5c-8bf5-e568af6b320d',0)
 GO
 
 CREATE TABLE Queued
