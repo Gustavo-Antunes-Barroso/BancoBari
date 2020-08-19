@@ -34,7 +34,7 @@ CREATE TABLE Queued
 	Data DATETIME NOT NULL,
 	FOREIGN KEY (SistemaId) REFERENCES Sistema(Id)
 ) 
-<br />
+<br /><br />
 Rode as duas aplicações para validar o funcionamento.<br />
 As api's do projeto BancoBari estão documentadas via swagger.<br />
 Através da url do RabbitMQ http://localhost:15672/ ou fazendo um simples select na tabela Queued, vemos o funcionamento do publish e do subscriber.
