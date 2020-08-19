@@ -36,5 +36,6 @@ CREATE TABLE Queued<br />
 ) <br />
 <br /><br />
 Rode as duas aplicações para validar o funcionamento.<br />
+Abra o cmd na pasta fisica onde se encontra o projeto angular, rode o compando 'npm i' para instalar os pacotes, depois de feito isso rode o comando 'ng s --open' para subir o servidor angular<br />
 As api's do projeto BancoBari estão documentadas via swagger.<br />
 Através da url do RabbitMQ http://localhost:15672/ ou fazendo um simples select na tabela Queued, vemos o funcionamento do publish e do subscriber.
