@@ -1,6 +1,5 @@
 using BancoBari.Subscriber_Application.Implementation;
 using BancoBari.Subscriber_Application.Interfaces;
-using BancoBari.Subscriber_Crosscutting.Context;
 using BancoBari.Subscriber_Domain.Intefaces;
 using BancoBari.Subscriber_Repository.Repository.Queued;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using BancoBari.Subscriber_Application.BackgroudService;
+using BancoBari.Subscriber_Repository.Context;
 
 namespace BancoBari.Subscriber_Presentation
 {

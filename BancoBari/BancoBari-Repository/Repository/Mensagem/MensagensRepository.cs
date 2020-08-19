@@ -1,17 +1,18 @@
 ﻿using entity = BancoBari_Domain.Entities;
 using BancoBari_Domain.RepositoryInterfaces.Mensagem;
-using Crosscutting.Context;
+using db = BancoBari_Repository.Repository.Context;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BancoBari_Repository.Repository.Mensagem
 {
     public class MensagensRepository : IMensagensRepository
     {
-        private readonly Context _db;
-        public MensagensRepository(Context db)
+        private readonly db.Context _db;
+        public MensagensRepository(db.Context db)
         {
             _db = db;
         }
@@ -54,15 +55,28 @@ namespace BancoBari_Repository.Repository.Mensagem
             return false;
         }
 
+        public void InserirMensagemParaIntegracaoContinua()
+        {
+            _db.Mensagem.Add(new entity.Mensagem
+            {
+                Descricao = "Hello World",
+                Id = Guid.NewGuid(),
+                Integrado = false,
+                SistemaId = Guid.Parse("07CCD9AB-C9EE-437A-A992-291417F1F23E")
+            });
+            _db.SaveChanges();
+        }
+
         public async Task<entity.Mensagem> Selecionar(Guid id)
         {
             var response = await _db.Mensagem.FirstOrDefaultAsync(x => x.Id == id);
             return response;
         }
 
-        public async Task<List<entity.Mensagem>> SelecionarTodos()
+        public async Task<List<entity.Mensagem>> SelecionarTodosNaoIntegrados()
         {
-            return await _db.Mensagem.ToListAsync();
+            var response = await _db.Mensagem.Where(x => x.Integrado == false).ToListAsync();
+            return response;
         }
     }
 }

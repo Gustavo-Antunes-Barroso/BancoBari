@@ -24,9 +24,9 @@ namespace BancoBari_Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SelecionarTodasMensagens()
+        public async Task<IActionResult> SelecionarTodosNaoIntegrados()
         {
-            var response = await _mensagensService.SelecionarTodos();
+            var response = await _mensagensService.SelecionarTodosNaoIntegrados();
             return Ok(response);
         }
 

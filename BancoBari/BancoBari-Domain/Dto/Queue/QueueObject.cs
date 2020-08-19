@@ -10,7 +10,6 @@ namespace BancoBari_Domain.Dto.Queue
             Data = DateTime.Now;
         }
         public Guid SistemaId { get; set; }
-        public string NomeSitema { get; set; }
         public Guid MensagemId { get; set; }
         public string MensagemDescricao { get; set; }
         public Guid TransactionId { get; set; }

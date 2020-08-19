@@ -9,7 +9,7 @@ namespace BancoBari_Application.Interfaces
         where TRequest: class
     {
         Task<TResult> Selecionar(Guid id);
-        Task<TResult> SelecionarTodos();
+        Task<TResult> SelecionarTodosNaoIntegrados();
         Task<TResult> Inserir(TRequest request);
         Task<TResult> Atualizar(TRequest request);
         Task<TResult> Excluir(Guid id);

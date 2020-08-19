@@ -1,7 +1,7 @@
-﻿using BancoBari_Domain.Entities;
+﻿using entity = BancoBari_Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Crosscutting.Context
+namespace BancoBari_Repository.Repository.Context
 {
     public class Context : DbContext
     {
@@ -9,6 +9,6 @@ namespace Crosscutting.Context
         {
 
         }
-        public DbSet<Mensagem> Mensagem { get; set; }
+        public DbSet<entity.Mensagem> Mensagem { get; set; }
     }
 }

@@ -78,19 +78,26 @@ namespace BancoBari_Application.Implementation.Mensagem
             return response;
         }
 
-        public async Task<TResult> SelecionarTodos()
+        public async Task<TResult> SelecionarTodosNaoIntegrados()
         {
             var response = new TResult();
-            var obj = await _mensagensRepository.SelecionarTodos();
+            var obj = await _mensagensRepository.SelecionarTodosNaoIntegrados();
 
             if (obj.Count <= 0)
+            {
+                InserirMensagemParaIntegracaoContinua();
                 response.Errors.Add("Nenhuma mensagem encontrada");
+            }
             else
             {
                 response.Object = _mapper.Map<List<MensagemDto>>(obj);
                 response.Success = true;
             }
             return response;
+        }
+        public void InserirMensagemParaIntegracaoContinua()
+        {
+            _mensagensRepository.InserirMensagemParaIntegracaoContinua();
         }
     }
 }

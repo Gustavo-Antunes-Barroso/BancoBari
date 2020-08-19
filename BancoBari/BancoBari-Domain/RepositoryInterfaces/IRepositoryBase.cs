@@ -8,7 +8,7 @@ namespace BancoBari_Domain.RepositoryInterfaces
     public interface IRepositoryBase<TEntity> where TEntity : class
     {
         Task<TEntity> Selecionar(Guid id);
-        Task<List<TEntity>> SelecionarTodos();
+        Task<List<TEntity>> SelecionarTodosNaoIntegrados();
         Task<bool> Inserir(TEntity request);
         Task<bool> Atualizar(TEntity request);
         Task<bool> Excluir(Guid id);

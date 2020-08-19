@@ -23,52 +23,54 @@ namespace BancoBari_Application.Implementation.Queue
         }
         public void Enfileirar()
         {
-            var host = _configuration.GetSection("QueueHost").Value;
-            var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(1) };
-            using (var connection = factory.CreateConnection())
+            var obj = MontarObjeto();
+            if (obj != null)
             {
-                using (var channel = connection.CreateModel())
+                var host = _configuration.GetSection("QueueHost").Value;
+                var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(1), Port = AmqpTcpEndpoint.UseDefaultPort };
+                using (var connection = factory.CreateConnection())
                 {
-                    channel.QueueDeclare(queue: "Mensagem",
-                        durable: false,
-                        exclusive: false,
-                        autoDelete: false,
-                        arguments: null
-                        );
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.QueueDeclare(queue: "Mensagem",
+                            durable: false,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null
+                            );
 
-                    var body = Encoding.UTF8.GetBytes(
-                        JsonConvert.SerializeObject(
-                            MontarObjeto()
-                            ));
+                        var body = Encoding.UTF8.GetBytes(
+                            JsonConvert.SerializeObject(
+                                obj
+                                ));
 
-                    channel.BasicPublish(exchange: "",
-                        routingKey: "Mensagem",
-                        basicProperties: null,
-                        body: body
-                        );
+                        channel.BasicPublish(exchange: "",
+                            routingKey: "Mensagem",
+                            basicProperties: null,
+                            body: body
+                            );
+                    }
+                    connection.Close();
                 }
-                connection.Close();
             }
         }
 
         public QueueObject MontarObjeto()
         {
-            var lstMensagem = (List<MensagemDto>)_mensagensService.SelecionarTodos().Result.Object;
-            var mensagem = lstMensagem.FirstOrDefault();
-
-            //Buscar sistema no banco
-            var response = new QueueObject
+            var lstMensagem = (List<MensagemDto>)_mensagensService.SelecionarTodosNaoIntegrados().Result.Object;
+            var mensagem = lstMensagem?.FirstOrDefault();
+            if (mensagem != null)
             {
-                MensagemDescricao = mensagem.Descricao,
-                //setado como NewGuid para teste e popular o banco
-                //MensagemId = mensagem.Id,
-                MensagemId = Guid.NewGuid(),
-                //HardCode
-                NomeSitema = "Publisher",
-                SistemaId = Guid.Parse("07ccd9ab-c9ee-437a-a992-291417f1f23e")
-            };
+                var response = new QueueObject
+                {
+                    MensagemDescricao = mensagem.Descricao,
+                    MensagemId = mensagem.Id,
+                    SistemaId = mensagem.SistemaId
+                };
 
-            return response;
+                return response;
+            }
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BancoBari.Subscriber_Application.Interfaces;
+using BancoBari.Subscriber_Domain.Dto.PublisherMensagem;
 using BancoBari.Subscriber_Domain.Entities;
 using BancoBari.Subscriber_Domain.Intefaces;
 using Microsoft.Extensions.Configuration;
@@ -6,8 +7,10 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BancoBari.Subscriber_Application.Implementation
 {
@@ -24,8 +27,7 @@ namespace BancoBari.Subscriber_Application.Implementation
         public void BuscarNaFila()
         {
             var host = _configuration.GetSection("QueueHost").Value;
-            var factory = new ConnectionFactory() { HostName = host };
-
+            var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(1), Port = AmqpTcpEndpoint.UseDefaultPort };
             using (var connection = factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())
@@ -44,28 +46,29 @@ namespace BancoBari.Subscriber_Application.Implementation
                         var consumer = new EventingBasicConsumer(channel);
                         QueuedObject obj = new QueuedObject();
                         string message = "";
-                        string inseriu = null;
+
                         consumer.Received += (model, ea) =>
                         {
                             var body = ea.Body.ToArray();
                             message = Encoding.UTF8.GetString(body);
                             obj = JsonConvert.DeserializeObject<QueuedObject>(message);
-                            inseriu = _queuedRepository.Inserir(obj).Result.ToString();
+                            _queuedRepository.Inserir(obj);
                         };
 
                         channel.BasicConsume(queue: "Mensagem",
                             autoAck: true,
                             consumer: consumer
                             );
-
-                        if (!string.IsNullOrWhiteSpace(inseriu))
-                            channel.Close();
                     }
-                   
-
                 }
                 connection.Close();
             }
+        }
+
+        public async Task<List<PublisherMensagemResponseDto>> SelecionarQuantidadeMensagens()
+        {
+            var response = await _queuedRepository.SelecionarQuantidadeMensagens();
+            return response;
         }
     }
 }
