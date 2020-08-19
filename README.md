@@ -1,9 +1,9 @@
-Primeiramente crie a file no RabbitMQ apartir de uma imagem no Docker utilizando o seguinte comando:
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
-Para verificar se está tudo ok, acesse http://localhost:15672/ user: guest senha: guest
+Primeiramente crie a file no RabbitMQ apartir de uma imagem no Docker utilizando o seguinte comando:<br />
+docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management<br />
+Para verificar se está tudo ok, acesse http://localhost:15672/ user: guest senha: guest<br /><br />
 
-Crie seu banco de dados e troque a ConnectionString nos arquivos appsettings.json em ambos projetos.
-Rode o seguinte script em seu banco de dados:
+Crie seu banco de dados e troque a ConnectionString nos arquivos appsettings.json em ambos projetos.<br />
+Rode o seguinte script em seu banco de dados:<br /><br />
 
 CREATE TABLE Sistema
 (
@@ -34,7 +34,7 @@ CREATE TABLE Queued
 	Data DATETIME NOT NULL,
 	FOREIGN KEY (SistemaId) REFERENCES Sistema(Id)
 ) 
-
-Rode as duas aplicações para validar o funcionamento.
-As api's do projeto BancoBari estão documentadas via swagger.
+<br />
+Rode as duas aplicações para validar o funcionamento.<br />
+As api's do projeto BancoBari estão documentadas via swagger.<br />
 Através da url do RabbitMQ http://localhost:15672/ ou fazendo um simples select na tabela Queued, vemos o funcionamento do publish e do subscriber.
