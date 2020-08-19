@@ -23,9 +23,9 @@ namespace BancoBari.Subscriber_Repository.Repository.Queued
             {
                 _db.Queued.Add(request);
                 await _db.SaveChangesAsync();
-                UpdateMensagemIntegrada(request.MensagemId);
                 return true;
             }
+            UpdateMensagemIntegrada(request.MensagemId);
             return false;
         }
         private async void UpdateMensagemIntegrada(Guid mensagemId)
@@ -51,7 +51,10 @@ namespace BancoBari.Subscriber_Repository.Repository.Queued
                               {
                                   PublisherDescricao = sq.Key.Nome,
                                   PublisherId = sq.Key.Id,
-                                  QntMensagens = sq.Count()
+                                  QntMensagens = sq.Count(),
+                                  QtdProcessadas = (from x in _db.Mensagem
+                                                    where x.Integrado == true && x.SistemaId == sq.Key.Id
+                                                    select x).Count()
                               }).ToListAsync();
             return query;
         }

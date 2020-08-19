@@ -30,6 +30,7 @@ namespace BancoBari.Subscriber_Presentation
             services.AddTransient<IQueuedRepository, QueuedRepository>();
             services.AddHostedService<TimedBackgroundService>();
 
+            services.AddCors();
             services.AddControllers();
         }
 
@@ -40,7 +41,7 @@ namespace BancoBari.Subscriber_Presentation
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors(option => option.AllowAnyOrigin());
             app.UseRouting();
 
             app.UseAuthorization();

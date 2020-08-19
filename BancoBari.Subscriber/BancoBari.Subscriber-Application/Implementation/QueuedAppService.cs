@@ -27,7 +27,7 @@ namespace BancoBari.Subscriber_Application.Implementation
         public void BuscarNaFila()
         {
             var host = _configuration.GetSection("QueueHost").Value;
-            var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(1), Port = AmqpTcpEndpoint.UseDefaultPort };
+            var factory = new ConnectionFactory() { HostName = host, RequestedHeartbeat = TimeSpan.FromMinutes(3), Port = AmqpTcpEndpoint.UseDefaultPort };
             using (var connection = factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())

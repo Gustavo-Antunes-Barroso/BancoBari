@@ -1,0 +1,18 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<section class="mt-5">
+  <div class="container">
+    <div class="row">
+        <div class="card" class="col-md" *ngFor="let x of retorno">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Nome: {{x.publisherDescricao}}<br/> 
+              Id: {{x.publisherId}}</li>
+            <li class="list-group-item">Mensagens: {{x.qntMensagens}}</li>
+          </ul>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<router-outlet></router-outlet>
